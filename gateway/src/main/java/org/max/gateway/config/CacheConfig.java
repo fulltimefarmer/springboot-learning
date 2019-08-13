@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.config;
+package org.max.gateway.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Lists;

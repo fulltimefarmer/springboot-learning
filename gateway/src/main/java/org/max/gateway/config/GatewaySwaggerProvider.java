@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.config;
+package org.max.gateway.config;
 
 import java.util.ArrayList;
 import java.util.List;

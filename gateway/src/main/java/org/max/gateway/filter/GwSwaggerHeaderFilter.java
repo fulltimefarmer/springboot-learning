@@ -1,7 +1,6 @@
-package com.nike.gcsc.gateway.filter;
+package org.max.gateway.filter;
 
-
-import com.nike.gcsc.gateway.config.GatewaySwaggerProvider;
+import org.max.gateway.config.GatewaySwaggerProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

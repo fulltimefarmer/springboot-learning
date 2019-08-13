@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.service;
+package org.max.gateway.service;
 
 import java.io.IOException;
 

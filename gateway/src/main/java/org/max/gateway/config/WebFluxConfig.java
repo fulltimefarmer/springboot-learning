@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.config;
+package org.max.gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

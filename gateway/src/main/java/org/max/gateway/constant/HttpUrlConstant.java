@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.constant;
+package org.max.gateway.constant;
 
 public class HttpUrlConstant {
 

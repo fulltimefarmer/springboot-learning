@@ -1,4 +1,4 @@
-package com.nike.gcsc.gateway.handler;
+package org.max.gateway.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
