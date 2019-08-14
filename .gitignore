@@ -4,10 +4,6 @@
 # Compiled class file
 *.class
 
-# property file
-application*.properties
-application.yml
-
 # Log file
 logs/
 *.log

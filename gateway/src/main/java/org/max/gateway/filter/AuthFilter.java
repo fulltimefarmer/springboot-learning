@@ -2,11 +2,7 @@ package org.max.gateway.filter;
 
 import java.net.URI;
 
-import org.max.gateway.constant.HttpUrlConstant;
-import org.max.gateway.service.HttpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -20,22 +16,15 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "custom.filter.auth",name="enable",havingValue ="true")
 public class AuthFilter implements GlobalFilter, Ordered {
-
-    @Value("${custom.swagger.enable}")
-    private Boolean swaggerConfig ;
 
     @Autowired
     DiscoveryClient discoveryClient;
-
-	@Autowired
-	private HttpService httpService;
 	
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI uri = exchange.getRequest().getURI();
-        String[] path = uri.getPath().split(HttpUrlConstant.SLASH);
+        String[] path = uri.getPath().split("/");
         if(path.length < 4){
             exchange.getResponse().setStatusCode(HttpStatus.LENGTH_REQUIRED);
             return exchange.getResponse().setComplete();

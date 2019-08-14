@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/swagger-resources")
-@ConditionalOnProperty(prefix = "custom.swagger",name="enable",havingValue ="true")
 public class SwaggerHandler {
 
     @Autowired(required = false)

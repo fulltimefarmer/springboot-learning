@@ -15,7 +15,6 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 @Component
 @Primary
-@ConditionalOnProperty(prefix = "custom.swagger",name="enable",havingValue ="true")
 public class GatewaySwaggerProvider implements SwaggerResourcesProvider {
 
     public static final String API_URI = "/v2/api-docs";

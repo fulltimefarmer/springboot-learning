@@ -1,0 +1,22 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:13001/eureka/
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+#      routes:
+#      - id: poc
+#        uri: lb://AUTH-SERVICE
+#        order: 0
+#        predicates:
+#          - Path=/move/cig/**
+#        filters:
+#          - RewritePath=/move/cig/(?<segment>.*), /$\{segment}
+custom:
+  cors:
+    enable: true

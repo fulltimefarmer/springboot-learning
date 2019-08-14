@@ -1,0 +1,17 @@
+server:
+  port: 13001
+spring:
+  application:
+    name: eureka
+eureka:
+  instance:
+    hostname: eureka
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 60000
+    peer-node-connect-timeout-ms: 6000
+    peer-node-read-timeout-ms: 6000
+  client:
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:13001/eureka/
