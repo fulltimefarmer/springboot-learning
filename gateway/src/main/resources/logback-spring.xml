@@ -138,7 +138,7 @@
     <!-- this value append for application.yml, spring.profiles.active=dev -->
     <springProfile name="local">
         <root level="DEBUG">
-            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="WARN_FILE" />
             <appender-ref ref="ALL_FILE" />
         </root>
     </springProfile>

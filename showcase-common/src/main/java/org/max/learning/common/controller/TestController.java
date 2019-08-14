@@ -35,27 +35,38 @@ public class TestController {
 		return new ResponseEntity<String>("index", HttpStatus.OK);
     }
 	
-    @ApiOperation(value = "test get", notes = "test get")
-    @GetMapping("/test_get")
-    public ResponseEntity<String> listAll(
+    @ApiOperation(value = "header", notes = "header")
+    @GetMapping("/header")
+    public ResponseEntity<String> header(
             HttpServletRequest req,
             HttpServletResponse resp) {
-        String result = "TEST GET IN POC.";
-        
-        String uri = req.getRequestURI();
-        System.out.println("URI: " + uri);
-        StringBuffer url = req.getRequestURL();
-        System.out.println("URL: " + url.toString());
-        
-        System.out.println("============ headers ===========");
+        StringBuilder sb = new StringBuilder();
+        sb.append("URI:").append(req.getRequestURI()).append("\n");
+        sb.append("URL:").append(req.getRequestURL()).append("\n");
+        sb.append("============ headers ===========");
         Enumeration<String> headerKeys = req.getHeaderNames();
         while(headerKeys.hasMoreElements()) {
         	String key = headerKeys.nextElement();
         	String value = req.getHeader(key);
-        	System.out.println(key + ":" + value);
+        	sb.append(key).append(":").append(value).append("\n");
         }
-        return new ResponseEntity<String>(result, HttpStatus.OK);
+        return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "attribute", notes = "attribute")
+    @GetMapping("/attribute")
+    public ResponseEntity<String> attribute(
+            HttpServletRequest req,
+            HttpServletResponse resp) {
+        StringBuilder sb = new StringBuilder();
+        Enumeration<String> attributeKeys = req.getAttributeNames();
+        while(attributeKeys.hasMoreElements()) {
+        	String key = attributeKeys.nextElement();
+        	Object value = req.getAttribute(key);
+        	sb.append(key).append(":").append(value.toString()).append("\n");
+        }
+        return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
+    }
+    
 }
 

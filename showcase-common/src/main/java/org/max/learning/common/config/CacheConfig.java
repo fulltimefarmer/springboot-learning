@@ -9,6 +9,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -17,6 +18,17 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class CacheConfig {
 
+    @Bean(name = "redisTemplate")
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(keySerializer());
+        redisTemplate.setHashKeySerializer(keySerializer());
+        redisTemplate.setValueSerializer(valueSerializer());
+        redisTemplate.setHashValueSerializer(valueSerializer());
+        return redisTemplate;
+    }
+    
     @Bean("redisCache")
     public CacheManager redisCache1Manager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
