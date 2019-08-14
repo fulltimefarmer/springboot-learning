@@ -9,14 +9,14 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-#      routes:
-#      - id: poc
-#        uri: lb://AUTH-SERVICE
-#        order: 0
-#        predicates:
-#          - Path=/move/cig/**
-#        filters:
-#          - RewritePath=/move/cig/(?<segment>.*), /$\{segment}
+      routes:
+      - id: common
+        uri: lb://SHOWCASE-COMMON
+        order: 1
+        predicates:
+          - Path=/common/**
+        filters:
+          - RewritePath=/common/(?<segment>.*), /$\{segment}
 custom:
   cors:
     enable: true

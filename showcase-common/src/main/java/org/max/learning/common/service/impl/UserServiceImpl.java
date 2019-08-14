@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
-    @Cacheable(value = "users", key = "#id", cacheManager="redisCache1")
+    @Cacheable(value = "users", key = "#id", cacheManager="redisCache")
     @Override
     public User findById(Long id) {
         Optional<User> opt = userRepository.findById(id);
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    @CachePut(value = "users" , key = "#param.id", cacheManager="redisCache1")
+    @CachePut(value = "users" , key = "#param.id", cacheManager="redisCache")
     @Override
     public Long add(User param) {
         if(null != param.getId()){
@@ -49,19 +49,19 @@ public class UserServiceImpl implements UserService {
         return saved.getId();
     }
 
-    @CachePut(value = "users", key = "#param.id", cacheManager="redisCache1")
+    @CachePut(value = "users", key = "#param.id", cacheManager="redisCache")
     @Override
     public User save(User param) {
         return userRepository.save(param);
     }
 
-    @CacheEvict(value = "users", key = "#p0", allEntries = true, cacheManager="redisCache1")
+    @CacheEvict(value = "users", key = "#p0", allEntries = true, cacheManager="redisCache")
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    @Cacheable(value = "username", key = "#p0", cacheManager="redisCache3")
+    @Cacheable(value = "username", key = "#p0", cacheManager="redisCache")
 	@Override
 	public Set<String> findUsernameByType(String type) {
     	Set<String> usernameSet = userRepository.findUsernameByType(type);
