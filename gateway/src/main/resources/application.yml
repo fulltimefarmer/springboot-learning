@@ -11,7 +11,7 @@ spring:
           lower-case-service-id: true
       routes:
       - id: common
-        uri: lb://SHOWCASE-COMMON
+        uri: lb://showcase-common
         order: 1
         predicates:
           - Path=/common/**

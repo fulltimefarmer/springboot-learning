@@ -7,7 +7,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -24,12 +23,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI uri = exchange.getRequest().getURI();
-        String[] path = uri.getPath().split("/");
-        if(path.length < 4){
-            exchange.getResponse().setStatusCode(HttpStatus.LENGTH_REQUIRED);
-            return exchange.getResponse().setComplete();
-        }
-        String type = path[4];
+        log.info("URI:{}, PORT:{}", uri.getPath(), uri.getPort());
         return chain.filter(exchange);
     }
 
