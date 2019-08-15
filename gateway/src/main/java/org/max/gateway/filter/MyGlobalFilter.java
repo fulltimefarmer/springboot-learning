@@ -28,7 +28,7 @@ public class MyGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     	redisTemplate.opsForList();
-    	ServerHttpRequest request = exchange.getRequest().mutate().header("index", value).build();
+    	ServerHttpRequest request = exchange.getRequest().mutate().header("index", "").build();
         ServerWebExchange newExchange = exchange.mutate().request(request).build();
         return chain.filter(newExchange);
     }

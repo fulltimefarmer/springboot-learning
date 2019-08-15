@@ -12,8 +12,9 @@
     <modules>
         <module>eureka</module>
         <module>gateway</module>
-        <module>showcase-task</module>
+        <module>webflux</module>
         <module>showcase-common</module>
+        <module>showcase-task</module>
     </modules>
 
 </project>
