@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.max.learning.common.dto.User;
-import org.max.learning.common.service.UserService;
+import org.max.learning.common.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userServiceImpl;
 
     @ApiOperation(value = "add user", notes = "add user")
     @PostMapping("/add")
@@ -38,7 +38,7 @@ public class UserController {
             HttpServletRequest req,
             HttpServletResponse resp,
             @RequestBody User requestBean) {
-        Long id = userService.add(requestBean);
+        Long id = userServiceImpl.add(requestBean);
         return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
 
@@ -49,7 +49,7 @@ public class UserController {
             HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable("id") Long id) {
-        userService.delete(id);
+    	userServiceImpl.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
     
@@ -59,7 +59,7 @@ public class UserController {
             HttpServletRequest req,
             HttpServletResponse resp,
             @RequestBody User requestBean) {
-        User result = userService.save(requestBean);
+        User result = userServiceImpl.save(requestBean);
         return new ResponseEntity<User>(result, HttpStatus.OK);
     }
     
@@ -70,7 +70,7 @@ public class UserController {
             HttpServletResponse resp,
             @RequestParam int pageNumber,
             @RequestParam int pageSize) {
-        Page<User> result = userService.findAll(pageNumber, pageSize);
+        Page<User> result = userServiceImpl.findAll(pageNumber, pageSize);
         return new ResponseEntity<Page<User>>(result, HttpStatus.OK);
     }
 
@@ -80,7 +80,7 @@ public class UserController {
             HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable("id") Long id) {
-        User result = userService.findById(id);
+        User result = userServiceImpl.findById(id);
         return new ResponseEntity<User>(result, HttpStatus.OK);
     }
     
@@ -90,7 +90,7 @@ public class UserController {
             HttpServletRequest req,
             HttpServletResponse resp,
             @PathVariable("type") String type) {
-        Set<String> result = userService.findUsernameByType(type);
+        Set<String> result = userServiceImpl.findUsernameByType(type);
         return new ResponseEntity<Set<String>>(result, HttpStatus.OK);
     }
     
