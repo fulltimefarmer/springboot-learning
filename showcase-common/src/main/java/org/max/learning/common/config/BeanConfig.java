@@ -1,4 +1,4 @@
-package com.nike.move.config;
+package org.max.learning.common.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.config.Registry;
