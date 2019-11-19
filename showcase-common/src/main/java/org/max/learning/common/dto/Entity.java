@@ -1,7 +1,6 @@
 package org.max.learning.common.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Data;
 
@@ -12,6 +11,5 @@ public class Entity implements Serializable {
 	
 	private String key;
 	private String value;
-	private List<User> userList;
 	
 }

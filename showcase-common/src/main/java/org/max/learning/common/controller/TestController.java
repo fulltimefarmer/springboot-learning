@@ -2,6 +2,7 @@ package org.max.learning.common.controller;
 
 
 import java.util.Enumeration;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -68,5 +70,18 @@ public class TestController {
         return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
     }
     
+    @ApiOperation(value = "param", notes = "param")
+    @GetMapping("/params")
+    public ResponseEntity<String> param(
+            HttpServletRequest req,
+            HttpServletResponse resp,
+            @RequestParam(name = "params") Set<String> params) {
+    	StringBuilder sb = new StringBuilder();
+    	for(String str : params) {
+    		System.out.println(str);
+    		sb.append(str).append(";");
+    	}
+        return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
+    }
 }
 

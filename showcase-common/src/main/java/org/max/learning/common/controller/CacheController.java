@@ -1,14 +1,9 @@
 package org.max.learning.common.controller;
 
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.max.learning.common.dto.Entity;
-import org.max.learning.common.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -46,28 +41,6 @@ public class CacheController {
 		return new ResponseEntity<Entity>(entity, HttpStatus.OK);
     }
 	
-    @ApiOperation(value = "post into cache", notes = "post into cache")
-    @GetMapping("/post/{key}/{value}")
-    public ResponseEntity<String> post(
-    		@PathVariable(name = "key") String key,
-    		@PathVariable(name = "value") String value) {
-    	Entity e = new Entity();
-    	e.setKey(key);
-    	e.setValue(value);
-    	List<User> users = new ArrayList<User>();
-    	for(long i=0;i<6;i++) {
-    		User u = new User();
-    		u.setId(i);
-    		u.setUsername("user"+i);
-    		u.setType("typeR");
-    		u.setCreateDate(new Date(Instant.now().getEpochSecond()));
-    		users.add(u);
-    	}
-    	e.setUserList(users);
-    	redisTemplate.opsForValue().set(e.getKey(), e, 5, TimeUnit.MINUTES);
-        return new ResponseEntity<String>(e.getKey(), HttpStatus.OK);
-    }
-    
     private Entity getFromRedis(String key) {
     	return (Entity)redisTemplate.opsForValue().get(key);
     }
