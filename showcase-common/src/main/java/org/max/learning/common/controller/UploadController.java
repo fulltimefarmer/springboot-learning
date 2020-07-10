@@ -1,5 +1,7 @@
 package org.max.learning.common.controller;
 
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,8 @@ public class UploadController {
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestPart(name = "file") MultipartFile file) {
 		try {
+			XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream());
+			XSSFSheet ws = wb.getSheetAt(0);
 			System.out.println(file.getOriginalFilename());
 		} catch(Exception e) {
 			e.printStackTrace();
