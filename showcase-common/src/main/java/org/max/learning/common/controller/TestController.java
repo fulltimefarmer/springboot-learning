@@ -7,6 +7,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.max.learning.common.service.AsyncService;
+import org.max.learning.common.service.TestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/test")
 public class TestController {
+	
+	@Autowired
+	private AsyncService asyncService;
 	
 	@ApiOperation(value = "index", notes = "index")
     @GetMapping("/index")
@@ -41,7 +47,8 @@ public class TestController {
     @GetMapping("/header")
     public ResponseEntity<String> header(
             HttpServletRequest req,
-            HttpServletResponse resp) {
+            HttpServletResponse resp) throws InterruptedException {
+    	asyncService.asyncRun();
         StringBuilder sb = new StringBuilder();
         sb.append("URI:").append(req.getRequestURI()).append("\n");
         sb.append("URL:").append(req.getRequestURL()).append("\n");

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -65,11 +66,16 @@ public class UploadController {
 			System.out.println("Max row: "+max);
 			int count = 0;
 			for(int i=4;i<max;i++) {
-//				Row row = ws.getRow(i);
-//				System.out.println(row.getCell(0).toString());
+				Row row = ws.getRow(i);
+				if(null != row){
+					Cell cell = row.getCell(1);
+					if(null != cell) {
+						System.out.println(cell.getStringCellValue());
+					}
+				}
 				count++;
 			}
-			System.out.println("Total count: "+count);
+			System.out.println("Total count: " + count);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
