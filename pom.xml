@@ -16,6 +16,7 @@
         <module>showcase-auth</module>
         <module>showcase-common</module>
         <module>showcase-task</module>
+        <module>graphql</module>
     </modules>
 
 </project>
