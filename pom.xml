@@ -17,6 +17,7 @@
         <module>showcase-common</module>
         <module>showcase-task</module>
         <module>graphql</module>
+        <module>exam</module>
     </modules>
 
 </project>
