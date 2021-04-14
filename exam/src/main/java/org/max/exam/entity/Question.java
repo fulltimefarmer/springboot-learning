@@ -1,38 +1,16 @@
 package org.max.exam.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name="question")
 public class Question {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false)
     private String subject;
-    
-    @Column(nullable = false)
     private String item1;
-    
-    @Column(nullable = false)
     private String item2;
-    
-    @Column(nullable = false)
     private String item3;
-    
-    @Column(nullable = false)
     private String item4;
-    
-    @Column(nullable = false)
     private String answer;
-
+    private String examName;
+    
 	public Question() {
 	}
 
@@ -90,5 +68,13 @@ public class Question {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	public String getExamName() {
+		return examName;
+	}
+
+	public void setExamName(String examName) {
+		this.examName = examName;
 	}
 }
