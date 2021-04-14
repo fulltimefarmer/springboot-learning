@@ -1,8 +1,12 @@
 package org.max.exam.entity;
 
-public class User {
+import java.io.Serializable;
 
-    private Long id;
+public class User implements Serializable {
+
+	private static final long serialVersionUID = -8319205747216528962L;
+	
+	private Long id;
     private String username;
     private String password;
     private String role;

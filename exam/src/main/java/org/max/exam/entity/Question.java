@@ -1,15 +1,18 @@
 package org.max.exam.entity;
 
-public class Question {
+import java.io.Serializable;
 
-    private Long id;
+public class Question implements Serializable {
+
+	private static final long serialVersionUID = 2980054407346636985L;
+	
+	private Long id;
     private String subject;
     private String item1;
     private String item2;
     private String item3;
     private String item4;
     private String answer;
-    private String examName;
     
 	public Question() {
 	}
@@ -68,13 +71,5 @@ public class Question {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
-	}
-
-	public String getExamName() {
-		return examName;
-	}
-
-	public void setExamName(String examName) {
-		this.examName = examName;
 	}
 }
