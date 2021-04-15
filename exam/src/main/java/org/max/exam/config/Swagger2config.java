@@ -20,16 +20,16 @@ public class Swagger2config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.nike.gcsc.auth"))
+                .apis(RequestHandlerSelectors.basePackage("org.max.exam.controller"))
                 .paths(PathSelectors.any())
                 .build();
 	}
 	
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-                .title("Auth Service APIs")
+                .title("Exam Service APIs")
                 .description("")
-                .contact(new Contact("Max", "", "max.zhou@nike.com"))
+                .contact(new Contact("Max", "", "zhoujun9633@163.com"))
                 .version("1.0")
                 .build();
 	}

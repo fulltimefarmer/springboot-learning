@@ -6,7 +6,7 @@ import org.max.exam.entity.Question;
 
 public class QuestionDap extends DBConnect {
 
-	public void create(Question user) {
+	public void create(Question question) {
 		
 	}
 	
@@ -14,7 +14,7 @@ public class QuestionDap extends DBConnect {
 		
 	}
 	
-	public void update(Question user) {
+	public void update(Question question) {
 		
 	}
 	

@@ -6,7 +6,7 @@ public class Question implements Serializable {
 
 	private static final long serialVersionUID = 2980054407346636985L;
 	
-	private Long id;
+	private int id;
     private String subject;
     private String item1;
     private String item2;
@@ -17,11 +17,11 @@ public class Question implements Serializable {
 	public Question() {
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

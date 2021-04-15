@@ -6,18 +6,18 @@ public class Exam implements Serializable {
 
 	private static final long serialVersionUID = -8332719597645165088L;
 
-    private Long id;
+    private int id;
     private String username;
     private String score;
     
 	public Exam() {
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

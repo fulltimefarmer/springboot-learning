@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/question")
-public class QuestionController {
+@RequestMapping("/item")
+public class ItemController {
 
 	@ApiOperation(value = "health check", notes = "health check")
     @GetMapping(value = "/public/health_check")
