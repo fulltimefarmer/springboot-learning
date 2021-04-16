@@ -2,8 +2,8 @@ package org.max.exam.controller;
 
 import java.util.List;
 
-import org.max.exam.dao.UserDao;
 import org.max.exam.entity.User;
+import org.max.exam.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,23 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-	UserDao userDao = new UserDao();
+	UserService userService = new UserService();
 	
     @PostMapping(value = "/create")
     public ResponseEntity<String> create(@RequestBody User user) {
-    	userDao.create(user);
+    	userService.add(user);
         return new ResponseEntity<>("created", HttpStatus.OK);
     }
 	
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable(name = "id") int id) {
-    	userDao.delete(id);
+    	userService.removeById(id);
         return new ResponseEntity<>("deleted", HttpStatus.OK);
     }
     
     @PostMapping(value = "/find")
     public ResponseEntity<List<User>> findAll() {
-    	List<User> userList = userDao.retrieveAll();
+    	List<User> userList = userService.findAll();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     
