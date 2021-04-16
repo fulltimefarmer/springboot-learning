@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nike.gcsc.workflow.mapper.TaskQueryMapper">
+    <sql id="baseSql">
+        select
+		    distinct RES.ID_ as taskId, RES.CREATE_TIME_ as startDate, RES.DUE_DATE_ as endDate,
+		    RES.NAME_ AS nodeName, RES.TASK_DEF_KEY_ AS nodeKey,
+		    E.PROC_INST_ID_ AS processInstanceId, E.BUSINESS_KEY_ AS bussinessKey, D.KEY_ AS processDefinitionKey
+		    , RI.USER_ID_ AS 'user', RI.GROUP_ID_ as 'group', D.VERSION_ as processVersion
+		FROM
+		    ACT_RU_TASK RES
+		inner join ACT_RU_EXECUTION E on
+		    E.PROC_INST_ID_ = RES.PROC_INST_ID_
+		inner join ACT_RE_PROCDEF D on
+		    RES.PROC_DEF_ID_ = D.ID_
+		inner join ACT_RU_IDENTITYLINK RI on
+            RES.ID_ = RI.TASK_ID_
+		where D.KEY_ = #{dto.processDefinitionKey} 
+		and RES.TENANT_ID_= #{dto.tenantId}
+    </sql>
+
+    <select id="queryCurrentProcessTasksWithProcessInstance" resultType="com.nike.gcsc.workflow.dto.CurrentTaskDbResultDto">
+		<include refid="baseSql"></include>
+		and E.BUSINESS_KEY_ IS NOT NULL
+		and E.PROC_INST_ID_ in 
+		<foreach collection="dto.processInstanceIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    
+    <select id="queryCurrentProcessTasksWithBussinessKey" resultType="com.nike.gcsc.workflow.dto.CurrentTaskDbResultDto">
+		<include refid="baseSql"></include>
+		and E.BUSINESS_KEY_ IN 
+		<foreach collection="dto.bussinessKeys" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>    
+</mapper>

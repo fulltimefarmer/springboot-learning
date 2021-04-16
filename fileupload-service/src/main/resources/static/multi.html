@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HTML5 bigFile upload Demo</title>
+<script src="jquery-3.4.1.min.js"></script>
+<script src="spark-md5.min.js"></script>
+<script>
+    var sys = "cig";
+    var md5 = "";
+    var page = {
+    	md5: "",
+        init: function(){
+            $("#upload").click($.proxy(this.preUpload, this));
+        },
+        
+        upload: function(file, start, end, md5) {
+        	//FormData is add in HTML5
+            var form = new FormData();
+            form.append("file", file.slice(start,end));  // file slice
+            form.append("fileStart", start);
+            form.append("fileEnd", end);
+            form.append("sys", sys); 
+            form.append("md5", md5); 
+            
+        	//Request before uploading
+            $.ajax({
+                url: "/v1/api/upload",
+                dataType: "json",
+                type: "POST",
+                data: form,
+                async: true,        // asynchronous
+                processData: false,  // Tell jquery not to process the form
+                contentType: false,  // Specify false to form the correct Content-Type
+                beforeSend: function() {
+                    $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": begin upload, start is:" + start + "<br/><br/>");
+                },
+                success: function(data){
+                    $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": end upload, response is:" + JSON.stringify(data)+ "<br/><br/>");
+                    if(data.success) {
+                    	data = data.data;
+                        $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": end upload, start is" + start + ", upload ratio ：" + data.completionRatio*100 +"% <br/><br/>");
+                    	
+                    	if(data.s3FilePath) {
+                            $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": end upload <br/><br/>");
+                            $("#url").val(data.s3FilePath);
+                            return;
+                        }
+                    	page.upload(file, data.fileStart, data.fileEnd, md5);
+                    }
+                }
+            });
+        },
+        
+        preUpload: function(){
+        	if(""==md5) {
+        		alert("md5 calculating....");
+        		return false;
+        	}
+            var file = $("#file")[0].files[0],  // upload file 
+                name = file.name,        // file name
+                size = file.size;        // file total size
+            sys = $("#sys").val();
+            console.log("sys:", sys);
+            
+            var jsonData = {
+            		sys: sys,
+            		md5: md5,
+            		fileName: name,
+            		totalSize: size
+                };
+            $("#url").val("");
+            $("#output").empty();
+            
+            $.ajax({
+                url: "/v1/api/pre_multi",
+                type: "POST",
+                dataType: "json",
+                contentType : "application/json",
+                data: JSON.stringify(jsonData),
+                beforeSend: function() {
+                	$("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": begin pre, data is:" + JSON.stringify(jsonData) + "<br/><br/>");
+                },
+                success: function(data) {
+                	$("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": end pre, response is:" + JSON.stringify(data)+ "<br/><br/>");
+                	if(data.success) {
+                		data = data.data;
+                		
+                		var shardSize = data.sliceSize;    // slice size
+                		
+                		if(data.s3FilePath) {
+                			$("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": end upload <br/><br/>");
+                            $("#url").val(data.s3FilePath);
+                            return;
+                		}
+                		
+                		var completionRatio = data.completionRatio; // Completed ratio
+                		$("#output").prepend(dateFormat("HH:MM:SS", new Date()) + ": upload ratio ：" + completionRatio*100 +"% <br/><br/>");
+                		
+                		if(data.slices.length >= 2) {
+                			setTimeout(function() {
+		                		var fileStart = data.slices[0].fileStart; // start slice file index
+		                		var fileEnd = data.slices[0].fileEnd; // end slice file index
+		                		page.upload(file, fileStart, fileEnd, md5);
+                			},100);
+                			setTimeout(function() {
+                                var fileStart = data.slices[1].fileStart; // start slice file index
+                                var fileEnd = data.slices[1].fileEnd; // end slice file index
+                                page.upload(file, fileStart, fileEnd, md5);
+                            },100);
+                		} else {
+                			var fileStart = data.slices[0].fileStart; // start slice file index
+                            var fileEnd = data.slices[0].fileEnd; // end slice file index
+                            page.upload(file, fileStart, fileEnd, md5);
+                		}
+                	}
+                }
+            });
+        }
+    };
+
+    $(function(){
+        page.init();
+        
+        var log=document.getElementById("log");
+        document.getElementById("file").addEventListener("change", function() {
+            var blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+                file = this.files[0],
+                chunkSize = 2097152, // read in chunks of 2MB
+                chunks = Math.ceil(file.size / chunkSize),
+                currentChunk = 0,
+                spark = new SparkMD5.ArrayBuffer(),
+                frOnload = function(e){
+                    spark.append(e.target.result); // append array buffer
+                    currentChunk++;
+                    if (currentChunk < chunks)
+                        loadNext();
+                    else {
+                        md5 = spark.end();
+                        $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + " md5 calculat end, md5 is:" + md5 + "<br/><br/>");
+                    }
+                },
+                frOnerror = function () {
+                	$("#output").prepend(dateFormat("HH:MM:SS", new Date()) + "<span style='color:red'>MD5 calculation error</spn>"+ "<br/><br/>");
+                };
+            function loadNext() {
+                var fileReader = new FileReader();
+                fileReader.onload = frOnload;
+                fileReader.onerror = frOnerror;
+                var start = currentChunk * chunkSize,
+                    end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+                fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
+            };
+            $("#output").empty();
+            $("#output").prepend(dateFormat("HH:MM:SS", new Date()) + " md5 calculating...."+ "<br/><br/>");
+            loadNext();
+        });
+        
+        $("#download").click(function() {
+        	var url = $("#url").val();
+        	$("#downloadFrame").attr("src", "/v1/api/download?sys="+sys+"&file=" + url);
+        });
+    });
+    
+    function dateFormat(fmt, date) {
+        let ret;
+        let opt = {
+            "Y+": date.getFullYear().toString(),
+            "m+": (date.getMonth() + 1).toString(),
+            "d+": date.getDate().toString(),
+            "H+": date.getHours().toString(), 
+            "M+": date.getMinutes().toString(),
+            "S+": date.getSeconds().toString()
+        };
+        for (let k in opt) {
+            ret = new RegExp("(" + k + ")").exec(fmt);
+            if (ret) {
+                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            };
+        };
+        return fmt;
+    }
+    </script>
+</head>
+
+<body>
+    <div>
+        <h2>Big file slice upload DEMO</h2>
+        <h3>Support for resumes of resumes and seconds of uploaded files</h3>
+        <h4><a href="md5.html" target="_blank">md5 generate demo</a></h4>
+    </div>
+    <select id="sys">
+        <option value="cig">cig</option>
+        <option value="touchless">touchless</option>
+    </select>
+	<input type="file" id="file" />
+	<button id="upload">upload</button><br />
+	<label for="url">upload result：</label><input name="url" id="url" readonly="readonly" style="width:400px"/><button id="download">download</button>
+	<div id="output" style="background-color: #000000; color: #FFFFFF; max-height: 500px; overflow: scroll;"></div>
+	<pre id=log></pre>
+	<iframe id="downloadFrame" height="0" width="0" style="border: 0"></iframe>
+</body>
+</html>

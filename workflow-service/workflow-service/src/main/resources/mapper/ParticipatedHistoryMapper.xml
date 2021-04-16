@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nike.gcsc.workflow.mapper.ParticipatedHistoryMapper">
+    <sql id="baseParticipatedHistoryApprovedResult">
+        from
+            ACT_HI_PROCINST PRO
+        inner join ACT_HI_TASKINST TAS ON
+            PRO.PROC_INST_ID_ = TAS.PROC_INST_ID_
+        inner join ACT_RE_PROCDEF D on
+            PRO.PROC_DEF_ID_ = D.ID_
+        inner join ACT_HI_COMMENT C ON
+            PRO.PROC_INST_ID_ = C.PROC_INST_ID_
+        WHERE
+            C.TASK_ID_ = TAS.ID_ 
+            and TAS.ASSIGNEE_ = #{dto.user} 
+            and D.KEY_ = #{dto.processDefinitionKey} 
+            and TAS.NAME_ = #{dto.taskName} 
+            and D.TENANT_ID_ = #{dto.tenantId} 
+        <if test="dto.approved == true">
+            and C.MESSAGE_ like 'true%'
+        </if>
+        <if test="dto.approved == false">
+            and C.MESSAGE_ like 'false%'
+        </if>
+        <if test="dto.approved == null">
+            AND (C.MESSAGE_ like 'true%' or C.MESSAGE_ like 'false%')
+        </if>
+        <if test="dto.processBussinessKeys != null and dto.processBussinessKeys.size > 0">
+            AND PRO.BUSINESS_KEY_ IN
+            <foreach collection="dto.processBussinessKeys" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dto.processInstanceIds != null and dto.processInstanceIds.size > 0">
+            AND PRO.PROC_INST_ID_ IN
+            <foreach collection="dto.processInstanceIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="countParticipatedHistoryApprovedResult" resultType="java.lang.Long">
+        select
+		    count(*) 
+		<include refid="baseParticipatedHistoryApprovedResult"></include>
+    </select>
+    
+    <select id="queryParticipatedHistoryApprovedResult" resultType="com.nike.gcsc.workflow.dto.ParticipatedHistoryResultDto">
+        select
+            PRO.BUSINESS_KEY_ AS bussinessKey,
+		    PRO.ID_ as processInstanceId,
+		    PRO.START_TIME_ as startDate,
+		    PRO.END_TIME_ as endDate,
+		    C.MESSAGE_ as approved,
+		    D.VERSION_ as processVersion
+        <include refid="baseParticipatedHistoryApprovedResult"></include>
+        <if test="dto.sortByBussinessKey == null">
+            order by PRO.PROC_INST_ID_+0 
+	        <if test="dto.sortByProcessInstanceIdAsc==true">
+	        asc 
+	        </if>
+	        <if test="dto.sortByProcessInstanceIdAsc==false">
+	        desc 
+	        </if>
+        </if>
+        <if test="dto.sortByBussinessKey != null">
+            order by PRO.BUSINESS_KEY_ 
+            <if test="dto.sortByBussinessKeyAsc==true">
+            asc 
+            </if>
+            <if test="dto.sortByBussinessKeyAsc==false">
+            desc 
+            </if>
+        </if>
+        limit #{startRow},#{pageSize}
+    </select>
+</mapper>

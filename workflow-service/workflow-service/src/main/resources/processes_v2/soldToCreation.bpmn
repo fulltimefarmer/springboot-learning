@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.nike.com/workflow">
+  <process id="soldToCreationId" name="soldToCreation" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <userTask id="SD_audit" name="SD Audit" activiti:candidateUsers="${user}"></userTask>
+    <receiveTask id="sendEmailToSD" name="Send mail to SD"></receiveTask>
+    <sequenceFlow id="flow4" name="AE Submit" sourceRef="startevent1" targetRef="sendEmailToSD"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="sendEmailToSD" targetRef="SD_audit"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow6" sourceRef="SD_audit" targetRef="exclusivegateway1"></sequenceFlow>
+    <receiveTask id="sendEmailRejectToAE" name="Send mail to AE"></receiveTask>
+    <sequenceFlow id="flow10" name="Reject" sourceRef="exclusivegateway1" targetRef="sendEmailRejectToAE">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${SD_audit_approved==false}]]></conditionExpression>
+    </sequenceFlow>
+    <receiveTask id="sendEmailToAllFds" name="Send mail to All FDs"></receiveTask>
+    <sequenceFlow id="flow14" sourceRef="sendEmailRejectToAE" targetRef="endevent1"></sequenceFlow>
+    <userTask id="FDs_audit" name="FDs Audit">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assigneeList" activiti:elementVariable="assignee">
+        <completionCondition>${nrOfInstances==nrOfCompletedInstances}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    <sequenceFlow id="flow16" sourceRef="FDs_audit" targetRef="exclusivegateway3"></sequenceFlow>
+    <sequenceFlow id="flow17" name="One refused" sourceRef="exclusivegateway3" targetRef="sendEmailRejectToAE">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${FDs_audit_all_approved==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow18" name="All Approved" sourceRef="exclusivegateway3" targetRef="VP_audit">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${FDs_audit_all_approved==true}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="VP_audit" name="VP Audit" activiti:candidateGroups="VP"></userTask>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow20" sourceRef="VP_audit" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow21" name="Reject" sourceRef="exclusivegateway2" targetRef="sendEmailRejectToAE">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${VP_audit_approved==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow23" sourceRef="sendEmailToAllFds" targetRef="FDs_audit"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway3" name="Parallel Gateway"></exclusiveGateway>
+    <receiveTask id="sendEmailApprovedToAE" name="Send mail to AE"></receiveTask>
+    <sequenceFlow id="flow24" name="Approved" sourceRef="exclusivegateway2" targetRef="sendEmailApprovedToAE">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${VP_audit_approved==true}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow26" name="Approved" sourceRef="exclusivegateway1" targetRef="exclusivegateway4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${SD_audit_approved==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow27" name="New Owner Group" sourceRef="exclusivegateway4" targetRef="sendEmailToAllFds">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${newOwnerGroup==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow28" name="Old Owner Group" sourceRef="exclusivegateway4" targetRef="VP_audit">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${newOwnerGroup==false}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="CIG_audit" name="CIG Audit" activiti:candidateGroups="CIG"></userTask>
+    <sequenceFlow id="flow29" sourceRef="sendEmailApprovedToAE" targetRef="CIG_audit"></sequenceFlow>
+    <sequenceFlow id="flow30" sourceRef="CIG_audit" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_soldToCreationId">
+    <bpmndi:BPMNPlane bpmnElement="soldToCreationId" id="BPMNPlane_soldToCreationId">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="41.0" width="41.0" x="102.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="105.0" y="1010.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SD_audit" id="BPMNShape_SD_audit">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmailToSD" id="BPMNShape_sendEmailToSD">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="102.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmailRejectToAE" id="BPMNShape_sendEmailRejectToAE">
+        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="771.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmailToAllFds" id="BPMNShape_sendEmailToAllFds">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="449.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FDs_audit" id="BPMNShape_FDs_audit">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="529.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="VP_audit" id="BPMNShape_VP_audit">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="700.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="102.0" y="778.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
+        <omgdc:Bounds height="40.0" width="40.0" x="102.0" y="619.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendEmailApprovedToAE" id="BPMNShape_sendEmailApprovedToAE">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="850.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="102.0" y="350.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CIG_audit" id="BPMNShape_CIG_audit">
+        <omgdc:Bounds height="55.0" width="105.0" x="70.0" y="930.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="122.0" y="61.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="100.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="49.0" x="128.0" y="69.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="122.0" y="155.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="122.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="260.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="142.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="280.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="771.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="30.0" x="156.0" y="260.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="302.0" y="826.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="1027.0"></omgdi:waypoint>
+        <omgdi:waypoint x="140.0" y="1027.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="122.0" y="584.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="619.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="142.0" y="639.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="639.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="771.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="61.0" x="146.0" y="619.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="122.0" y="659.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="700.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="63.0" x="130.0" y="668.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="122.0" y="755.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="778.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="142.0" y="798.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="798.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="30.0" x="157.0" y="779.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="122.0" y="504.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="529.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="122.0" y="818.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="850.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="48.0" x="128.0" y="820.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="122.0" y="300.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="350.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="48.0" x="128.0" y="299.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="122.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="449.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="93.0" x="130.0" y="399.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="102.0" y="370.0"></omgdi:waypoint>
+        <omgdi:waypoint x="25.0" y="369.0"></omgdi:waypoint>
+        <omgdi:waypoint x="25.0" y="469.0"></omgdi:waypoint>
+        <omgdi:waypoint x="25.0" y="727.0"></omgdi:waypoint>
+        <omgdi:waypoint x="70.0" y="727.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="86.0" x="21.0" y="351.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="122.0" y="905.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="930.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="122.0" y="985.0"></omgdi:waypoint>
+        <omgdi:waypoint x="122.0" y="1010.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
