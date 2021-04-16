@@ -16,13 +16,13 @@ public class ItemDao extends DBConnect {
 	
 	public void create(Item item) {
 		try {
-			String sql = "INSERT INTO `item` (`exam_id`, `question_id`, `correct_answer`, `student_answer`) VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO `item` (`exam_id`, `question_id`, `student_answer`) VALUES (?, ?, ?)";
 			pstmt = getConnection().prepareStatement(sql);
 			pstmt.setInt(1, item.getExamId());
 			pstmt.setInt(2, item.getQuestionId());
-			pstmt.setString(3, item.getCorrectAnswer());
-			pstmt.setString(4, item.getStudentAnswer());
+			pstmt.setString(3, item.getStudentAnswer());
 			pstmt.executeUpdate();
+			pstmt.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -30,27 +30,28 @@ public class ItemDao extends DBConnect {
 	
 	public void deleteByExamId(int id) {
 		try {
-			String sql = "DELETE FROM `item` WHERE `id` = ?";
+			String sql = "DELETE FROM `item` WHERE `exam_id` = ?";
 			pstmt = getConnection().prepareStatement(sql);
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
+			pstmt.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public List<Item> retrieveByExamId(int id) {
+	public List<Item> retrieveByExamId(int examId) {
 		List<Item> itemList = new ArrayList<Item>();
 		try {
-			String sql = "SELECT `id`, `exam_id`, `question_id`, `correct_answer`, `student_answer` FROM `item`";
-			stmt = getConnection().createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			String sql = "SELECT `id`, `question_id`, `student_answer` FROM `item` WHERE `exam_id` = ?";
+			pstmt = getConnection().prepareStatement(sql);
+			pstmt.setInt(1, examId);
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Item i = new Item();
 				i.setId(rs.getInt("id"));
-				i.setExamId(rs.getInt("exam_id"));
+				i.setExamId(examId);
 				i.setQuestionId(rs.getInt("question_id"));
-				i.setCorrectAnswer(rs.getString("correct_answer"));
 				i.setStudentAnswer(rs.getString("student_answer"));
 				itemList.add(i);
 			}

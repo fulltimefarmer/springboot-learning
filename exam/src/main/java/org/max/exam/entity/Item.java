@@ -9,8 +9,8 @@ public class Item implements Serializable {
 	private int id;
     private int examId;
     private int questionId;
-    private String correctAnswer;
     private String studentAnswer;
+    private Question question;
     
 	public Item() {
 	}
@@ -39,19 +39,19 @@ public class Item implements Serializable {
 		this.questionId = questionId;
 	}
 
-	public String getCorrectAnswer() {
-		return correctAnswer;
-	}
-
-	public void setCorrectAnswer(String correctAnswer) {
-		this.correctAnswer = correctAnswer;
-	}
-
 	public String getStudentAnswer() {
 		return studentAnswer;
 	}
 
 	public void setStudentAnswer(String studentAnswer) {
 		this.studentAnswer = studentAnswer;
+	}
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 }

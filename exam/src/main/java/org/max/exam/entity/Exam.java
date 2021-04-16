@@ -1,6 +1,7 @@
 package org.max.exam.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Exam implements Serializable {
 
@@ -9,6 +10,7 @@ public class Exam implements Serializable {
     private int id;
     private String username;
     private String score;
+    List<Item> itemList;
     
 	public Exam() {
 	}
@@ -35,5 +37,13 @@ public class Exam implements Serializable {
 
 	public void setScore(String score) {
 		this.score = score;
+	}
+
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<Item> itemList) {
+		this.itemList = itemList;
 	}
 }

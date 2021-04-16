@@ -22,6 +22,7 @@ public class UserDao extends DBConnect {
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getRole());
 			pstmt.executeUpdate();
+			pstmt.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -33,6 +34,7 @@ public class UserDao extends DBConnect {
 			pstmt = getConnection().prepareStatement(sql);
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
+			pstmt.close();
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
