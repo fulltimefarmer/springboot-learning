@@ -18,7 +18,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-		<guava.version>26.0-jre</guava.version>
+		<guava.version>29.0-jre</guava.version>
 		<graphql.version>15.0</graphql.version>
 		<neo4j.version>3.5.26</neo4j.version>
         <skipTests>true</skipTests>
