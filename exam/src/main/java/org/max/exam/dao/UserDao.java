@@ -62,4 +62,26 @@ public class UserDao extends DBConnect {
 		return userList;
 	}
 	
+	public User retrieveByUsername(String username) {
+		User result = null;
+		try {
+			String sql = "SELECT `id`, `username`, `password`, `role` FROM `user` WHERE `username` = ?";
+			pstmt = getConnection().prepareStatement(sql);
+			pstmt.setString(1, username);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result = new User();
+				result.setId(rs.getInt("id"));
+				result.setUsername(username);
+				result.setPassword(rs.getString("password"));
+				result.setRole(rs.getString("role"));
+			}
+			pstmt.close();
+			rs.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 }
