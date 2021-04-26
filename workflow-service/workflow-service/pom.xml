@@ -25,7 +25,7 @@
 		<fastjson.version>1.2.60</fastjson.version>
 		<powermock.version>1.6.4</powermock.version>
 		<mockito.version>1.10.19</mockito.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.7</commons-io.version>
 		<jasypt.version>2.1.1</jasypt.version>
 		<dozer.version>5.5.1</dozer.version>
 		<gcsc-base.version>1.0.0.RELEASE</gcsc-base.version>
